@@ -6,11 +6,11 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 import { useEffect, useState } from "react";
 import Landing from "./Components/Landing";
-import "./app.css";
 import Inicio from "./Components/Inicio";
 import Navbar from "./Components/Navbar";
 import Ofertas from "./Components/Ofertas";
 import Postulaciones from "./Components/Postulaciones";
+import './app.css';
 
 function ProtectedRoute({ children }) {
   const [user, setUser] = useState(undefined);
