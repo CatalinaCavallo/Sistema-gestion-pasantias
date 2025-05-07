@@ -3,7 +3,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import { ref as dbRef, get } from "firebase/database";
 import { auth, database } from "../firebaseConfig";
 import { useNavigate, Link } from "react-router-dom";
-import "../App.css";
 
 export default function Inicio() {
   const [usuario, setUsuario] = useState(null);
