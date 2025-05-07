@@ -10,7 +10,7 @@ import Inicio from "./Components/Inicio";
 import Navbar from "./Components/Navbar";
 import Ofertas from "./Components/Ofertas";
 import Postulaciones from "./Components/Postulaciones";
-import './app.css';
+import './App.css';
 
 function ProtectedRoute({ children }) {
   const [user, setUser] = useState(undefined);
