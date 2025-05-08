@@ -1,7 +1,7 @@
 # Sistema de Gestión de Pasantías 
-URL del informe del primer sprint del sistema: https://drive.google.com/file/d/1n7237sHJNS294kDgSL1Yq-0eH7Szw7Dp/view?usp=drive_link
+Link del informe del primer sprint del sistema: https://drive.google.com/file/d/1n7237sHJNS294kDgSL1Yq-0eH7Szw7Dp/view?usp=drive_link
 Dentro de este, se encuentra todo el desarrollo del trabajo, los diferentes diagramas, prototipos y pruebas unitarias.
 
-URL del Sistema de Gestión de pasantías: https://sistema-gestion-pasantias-vohs.vercel.app/
+Link del Sistema de Gestión de pasantías: https://sistema-gestion-pasantias-vohs.vercel.app/
 
 
