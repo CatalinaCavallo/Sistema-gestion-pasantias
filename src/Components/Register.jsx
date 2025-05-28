@@ -8,18 +8,19 @@ import axios from "axios";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
-    nombre: "",
-    apellido: "",
+    nombreCompleto: "",
     dni: "",
     telefono: "",
     email: "",
     legajo: "",
     password: "",
-    carrera: "", 
+    carrera: "",
     habilidades: "",
     experiencia: "",
     cursos: "",
+    fechaNacimiento: "",
   });
 
   const [cvFile, setCvFile] = useState(null);
@@ -32,8 +33,37 @@ export default function Register() {
 
   const handleFileChange = (e) => setCvFile(e.target.files[0]);
 
+  const validate = () => {
+    const newErrors = {};
+    if (!/^[0-9]{8}$/.test(formData.dni)) newErrors.dni = "El DNI debe tener 8 números.";
+    if (!/^[0-9]{10}$/.test(formData.telefono)) newErrors.telefono = "El teléfono debe tener 10 números (sin 15).";
+    if (!/^[0-9]{5}$/.test(formData.legajo)) newErrors.legajo = "El legajo debe tener 5 números.";
+
+    const fechaPattern = /^(\d{2})-(\d{2})-(\d{4})$/;
+    const fechaMatch = formData.fechaNacimiento.match(fechaPattern);
+    if (!fechaMatch) {
+      newErrors.fechaNacimiento = "La fecha debe tener el formato dd-mm-yyyy.";
+    } else {
+      const dia = parseInt(fechaMatch[1], 10);
+      const mes = parseInt(fechaMatch[2], 10);
+      const anio = parseInt(fechaMatch[3], 10);
+      const fecha = new Date(`${anio}-${mes}-${dia}`);
+      if (
+        fecha.getFullYear() !== anio ||
+        fecha.getMonth() + 1 !== mes ||
+        fecha.getDate() !== dia
+      ) {
+        newErrors.fechaNacimiento = "La fecha ingresada no es válida.";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
     setLoading(true);
 
     try {
@@ -42,18 +72,15 @@ export default function Register() {
       const uid = userCredential.user.uid;
 
       if (cvFile) {
-        const formData = new FormData();
-        formData.append("cv", cvFile);
+        const formDataFile = new FormData();
+        formDataFile.append("cv", cvFile);
 
-        await axios.post("http://localhost:3000/upload", formData, {
+        await axios.post("http://localhost:3000/upload", formDataFile, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
         });
       }
-
-      console.log("Perfil que se va a guardar en Firebase: ", perfil);
-      console.log("Subiendo archivo CV: ", cvFile ? cvFile.name : "No hay archivo");
 
       await set(dbRef(database, "usuarios/" + uid), {
         ...perfil,
@@ -78,30 +105,32 @@ export default function Register() {
         <div className="form-grid">
           <div className="column-left">
             <h3>Datos Personales</h3>
-            <input name="nombre" placeholder="Nombre" onChange={handleChange} required />
-            <input name="apellido" placeholder="Apellido" onChange={handleChange} required />
-            <input name="dni" placeholder="DNI" onChange={handleChange} required />
-            <input name="telefono" placeholder="Teléfono" onChange={handleChange} required />
-            <input name="email" type="email" placeholder="Correo" onChange={handleChange} required />
-            <input name="password" type="password" placeholder="Contraseña" onChange={handleChange} required minLength="6" />
-            <input name="legajo" placeholder="Legajo" onChange={handleChange} required />
-            <select name="carrera" value={formData.carrera} onChange={handleChange} required>
-              <option value="" disabled>Selecciona tu carrera</option>
-              <option value="Ingenieria en Sistemas de Informacion">Ingeniería en Sistemas de Información</option>
-              <option value="Ingenieria Industrial">Ingeniería Industrial</option>
-              <option value="Ingenieria Quimica">Ingeniería Química</option>
-              <option value="Ingenieria Electronica">Ingeniería Electrónica</option>
-              <option value="Ingenieria Electromecanica">Ingeniería Electromecánica</option>
-              <option value="Licenciatura en Administracion Rural">Licenciatura en Administración Rural</option>
-              <option value="Tecnicatura en Programacion">Tecnicatura en Programación</option>
-            </select>
+            <label>Nombre y Apellido<input name="nombreCompleto" value={formData.nombreCompleto} onChange={handleChange} required /></label>
+            <label>DNI<input name="dni" value={formData.dni} onChange={handleChange} required />{errors.dni && <span className="error">{errors.dni}</span>}</label>
+            <label>Teléfono<input name="telefono" value={formData.telefono} onChange={handleChange} required />{errors.telefono && <span className="error">{errors.telefono}</span>}</label>
+            <label>Correo electrónico<input name="email" type="email" value={formData.email} onChange={handleChange} required /></label>
+            <label>Contraseña<input name="password" type="password" value={formData.password} onChange={handleChange} required minLength="6" /></label>
+            <label>Legajo<input name="legajo" value={formData.legajo} onChange={handleChange} required />{errors.legajo && <span className="error">{errors.legajo}</span>}</label>
+            <label>Fecha de nacimiento (dd-mm-yyyy)<input name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} required />{errors.fechaNacimiento && <span className="error">{errors.fechaNacimiento}</span>}</label>
+            <label>Carrera
+              <select name="carrera" value={formData.carrera} onChange={handleChange} required>
+                <option value="" disabled>Selecciona tu carrera</option>
+                <option value="Ingenieria en Sistemas de Informacion">Ingeniería en Sistemas de Información</option>
+                <option value="Ingenieria Industrial">Ingeniería Industrial</option>
+                <option value="Ingenieria Quimica">Ingeniería Química</option>
+                <option value="Ingenieria Electronica">Ingeniería Electrónica</option>
+                <option value="Ingenieria Electromecanica">Ingeniería Electromecánica</option>
+                <option value="Licenciatura en Administracion Rural">Licenciatura en Administración Rural</option>
+                <option value="Tecnicatura en Programacion">Tecnicatura en Programación</option>
+              </select>
+            </label>
           </div>
 
           <div className="column-right">
             <h3>Datos Laborales</h3>
-            <textarea name="habilidades" placeholder="Habilidades" onChange={handleChange} required />
-            <textarea name="experiencia" placeholder="Experiencia" onChange={handleChange} required />
-            <textarea name="cursos" placeholder="Cursos y capacitaciones" onChange={handleChange} required />
+            <label>Habilidades<textarea name="habilidades" value={formData.habilidades} onChange={handleChange} required /></label>
+            <label>Experiencia<textarea name="experiencia" value={formData.experiencia} onChange={handleChange} required /></label>
+            <label>Cursos y capacitaciones<textarea name="cursos" value={formData.cursos} onChange={handleChange} required /></label>
             <label htmlFor="cvFile" className="file-label">Subir CV (PDF, DOC, DOCX)</label>
             <input
               id="cvFile"

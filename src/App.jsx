@@ -10,6 +10,7 @@ import Inicio from "./Components/Inicio";
 import Navbar from "./Components/Navbar";
 import Ofertas from "./Components/Ofertas";
 import Postulaciones from "./Components/Postulaciones";
+import RecuperarContrasena from "./Components/RecuperarContrasena";
 import './App.css';
 
 function ProtectedRoute({ children }) {
@@ -60,6 +61,8 @@ function AppContent() {
 
           {/* Redirección por defecto a Landing si la ruta no coincide */}
           <Route path="*" element={<Navigate to="/" />} />
+
+          <Route path="/recuperar" element={<RecuperarContrasena />} />
         </Routes>
       </div>
     </div>

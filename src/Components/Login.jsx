@@ -27,6 +27,7 @@ export default function Login() {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Contraseña" required />
         <button type="submit">Entrar</button>
         <p>¿No tenés cuenta? <Link to="/registro">Registrate aquí</Link></p>
+        <p>¿Olvidaste tu contraseña? <Link to="/recuperar">Recuperala aquí</Link></p>
       </form>
     </div>
   );

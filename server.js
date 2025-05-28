@@ -46,3 +46,4 @@ app.use("/uploads", express.static(uploadDir));
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
+
