@@ -37,7 +37,7 @@ export default function Perfil() {
         <section className="perfil-seccion">
           <h3>Datos Personales</h3>
           <hr />
-          <div className="perfil-dato"><strong>Nombre:</strong> {usuario.nombre} {usuario.apellido}</div>
+          <div className="perfil-dato"><strong>Nombre:</strong> {usuario.nombreCompleto}</div>
           <div className="perfil-dato"><strong>DNI:</strong> {usuario.dni}</div>
           <div className="perfil-dato"><strong>Legajo:</strong> {usuario.legajo}</div>
           <div className="perfil-dato"><strong>Teléfono:</strong> {usuario.telefono}</div>
@@ -55,7 +55,7 @@ export default function Perfil() {
             <strong>CV:</strong>{" "}
             {usuario.cvFilename ? (
               <a 
-                href={`http://localhost:3000/download-cv/${usuario.cvFilename}`}
+                href={`http://localhost:3000${usuario.cvFilename}`}
                 target="_blank" 
                 rel="noopener noreferrer"
               >
