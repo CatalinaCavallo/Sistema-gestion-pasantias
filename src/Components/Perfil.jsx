@@ -29,6 +29,14 @@ export default function Perfil() {
   if (cargando) return <p>Cargando perfil...</p>;
   if (!usuario) return <p>No se encontró el perfil.</p>;
 
+  // Función para construir la URL del CV
+  const getCvUrl = () => {
+    if (!usuario.cvFilename) return null;
+    return usuario.cvFilename.startsWith('/uploads') 
+      ? `http://localhost:3000${usuario.cvFilename}`
+      : `http://localhost:3000/uploads/${usuario.cvFilename}`;
+  };
+
   return (
     <div className="perfil-container">
       <div className="perfil-card">
@@ -53,9 +61,9 @@ export default function Perfil() {
           <div className="perfil-dato"><strong>Cursos:</strong> {usuario.cursos}</div>
           <div className="perfil-dato">
             <strong>CV:</strong>{" "}
-            {usuario.cvFilename ? (
+            {getCvUrl() ? (
               <a 
-                href={`http://localhost:3000${usuario.cvFilename}`}
+                href={getCvUrl()}
                 target="_blank" 
                 rel="noopener noreferrer"
               >
@@ -74,4 +82,4 @@ export default function Perfil() {
       </div>
     </div>
   );
-}  
+}

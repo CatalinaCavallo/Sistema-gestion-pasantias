@@ -21,6 +21,7 @@ export default function Register() {
     experiencia: "",
     cursos: "",
     fechaNacimiento: "",
+    cvFilename: "",
   });
 
   const [cvFile, setCvFile] = useState(null);
@@ -61,42 +62,47 @@ export default function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-    setLoading(true);
+const handleRegister = async (e) => {
+  e.preventDefault();
+  if (!validate()) return;
+  setLoading(true);
 
-    try {
-      const { email, password, ...perfil } = formData;
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
+  try {
+    let cvFilePath = ""; // Variable para almacenar la ruta del archivo
 
-      if (cvFile) {
-        const formDataFile = new FormData();
-        formDataFile.append("cv", cvFile);
+    if (cvFile) {
+      const formDataFile = new FormData();
+      formDataFile.append("cv", cvFile);
 
-        await axios.post("http://localhost:3000/upload", formDataFile, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        });
-      }
-
-      await set(dbRef(database, "usuarios/" + uid), {
-        ...perfil,
-        email,
-        uid,
+      const response = await axios.post("http://localhost:3000/uploads", formDataFile, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
       });
 
-      alert("Registro exitoso. Serás redirigido al inicio.");
-      navigate("/inicio");
-    } catch (error) {
-      console.error("Error en el registro:", error);
-      alert("Error: " + error.message);
-    } finally {
-      setLoading(false);
+      cvFilePath = response.data.filePath;
     }
-  };
+
+    const { email, password, ...perfil } = formData;
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
+  
+    await set(dbRef(database, "usuarios/" + uid), {
+      ...perfil,
+      email,
+      uid,
+      cvFilename: cvFilePath // Usamos la variable directamente
+    });
+
+    alert("Registro exitoso. Serás redirigido al inicio.");
+    navigate("/inicio");
+  } catch (error) {
+    console.error("Error en el registro:", error);
+    alert("Error: " + error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="page-container">
